@@ -1,5 +1,6 @@
 package com.example.medidor;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.database.Cursor;
@@ -7,11 +8,16 @@ import android.graphics.Color;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.ContextMenu;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridView;
+import android.widget.ImageButton;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -22,77 +28,93 @@ import com.example.medidor.mensagens_tela.Mensagem;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
-import java.util.List;
+
+/**
+ * @author Felipe Coelho
+ * @email equipeonetech@gmail.com
+ * */
 
 public class Principal extends AppCompatActivity {
-    private Button btCalcular, btConsultar, btExcluir;
-    public static EditText edtMedidaAnterior;
-    public static EditText edtMedidaAtual;
-    public static TextView txtResultado;
-    public static GridView gridView;
+    private Button btCalcular, btConsultar;
+    private ImageButton btExcluir;
+    public  EditText edtMedidaAnterior;
+    public  EditText edtMedidaAtual;
+    public  EditText edtExcluir;
+    public  ListView listView;
     private Context ctx = this;
+    private ArrayList<String> arrayList;
+    private ArrayAdapter<String> adapter;
     DataBaseHelper myDB;
-
-    /**Instancia da classe Mensagem, para mensagens TOAST*/
-    final Mensagem mensagem = new Mensagem (this);
-
+    Calcular calcular;
+    Mensagem mensagem;
+    @SuppressLint("WrongViewCast")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         myDB = new DataBaseHelper(ctx);
-
-
+        calcular = new Calcular ();
+        mensagem = new Mensagem (ctx);
 
         /**Declarando elementos em tela (Botões, textView, caixas de textos)*/
         btCalcular = (Button)findViewById(R.id.btCalcular);
         btConsultar = (Button)findViewById (R.id.btConsultarDados);
-        btExcluir = (Button)findViewById (R.id.btExcluir);
+        btExcluir = (ImageButton)findViewById(R.id.btExcluir);
         edtMedidaAnterior = (EditText)findViewById(R.id.edtMedidaAnterior);
         edtMedidaAtual = (EditText)findViewById(R.id.edtMedidaAtual);
-        txtResultado = (TextView)findViewById(R.id.txtResultado);
-        gridView = (GridView)findViewById (R.id.GridView);
+        edtExcluir = (EditText)findViewById (R.id.edtCampExcluir);
+        listView = (ListView)findViewById (R.id.listView);
 
-        /**Ação Click do Button Calcular*/
+        registerForContextMenu (listView);
+        consultar();
+
+        /**
+         * @Ação Click do Button Calcular
+         **/
         btCalcular.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 /**Testando se algum campo está vazio antes do calculo*/
                 if((edtMedidaAnterior.getText().length ()!=0) && (edtMedidaAtual.getText().length ()!=0)){
-                    txtResultado.setText ("Estimativa a pagar: R$ " + Calcular.calculando());
-                    salvandoOperacao ();
+                    int numAnterior = Integer.parseInt (edtMedidaAnterior.getText().toString ());
+                    int numAtual =Integer.parseInt (edtMedidaAtual.getText ().toString ());
+
+                            /**@RN001- O campo Medida Anterior não pode ser maior ou igual o campo Medida Atual.*/
+                            if(numAnterior >= numAtual){
+                                mensagem.mensagemNumAnteriorMaiorAtual ();
+                            }else{
+                                /**regatando valores para realizar calculo*/
+                                calcular.setNumAnterior (numAnterior);
+                                calcular.setNumAtual (numAtual);
+                                alertResultado (calcular.calculando ());
+                            }
+
                 }else{
                     mensagem.mensagemCampoNull();
-                    txtResultado.setText("");
                 }
 
             }
         });
 
-        /**Ação Click do Button Consultar Outros Meses*/
+        /**
+         * @Ação Click do Button Consultar Outros Meses
+         **/
         btConsultar.setOnClickListener (new View.OnClickListener () {
             @Override
             public void onClick(View view) {
                 consultar ();
             }
         });
-
-        btExcluir.setOnClickListener (new View.OnClickListener () {
-            @Override
-            public void onClick(View view) {
-                listaDialog ();
-            }
-        });
     }
 
 
-
-    /**Método que resgata o valor dos campos e salva no banco (insert).*/
+    /**
+     * @Método que resgata o valor dos campos e salva no banco (insert).
+     **/
     private void salvandoOperacao(){
-        String medidaAtual = Calcular.numAtual.toString ();
-        String precoEstimado = String.valueOf (Calcular.calculando ());
+        String medidaAtual = calcular.getNumAtual().toString ();
+        String precoEstimado = String.valueOf (calcular.calculando ());
         String data = getDateTime();
         Boolean result = myDB.insertData(medidaAtual, precoEstimado,data);
 
@@ -104,70 +126,78 @@ public class Principal extends AppCompatActivity {
         }
     }
 
-    /**Método que lista todos registros do banco na GridView.*/
+    /**
+     * @Método que lista todos registros do banco na GridView.
+     **/
     private void consultar(){
         Cursor res = myDB.getAllData();
-        ArrayList<String> arrayList = new ArrayList<> ();
+        arrayList = new ArrayList<> ();
             while (res.moveToNext ()){
-                arrayList.add (" ("+res.getString (0)+") "+res.getString (1));/**Campo id + ultima medida do medidor*/
-                arrayList.add (res.getString (2));/**Campo valor estimado*/
-                arrayList.add (res.getString (3));/**Campo data*/
+                arrayList.add (" ("+res.getString (0)+") "+res.getString (1)+" - "+res.getString (2)+" - "+res.getString (3));
             }
-            ArrayAdapter<String> adapter = new ArrayAdapter<> (this,android.R.layout.simple_list_item_1,arrayList);
-            gridView.setAdapter (adapter);
+            adapter = new ArrayAdapter<> (this,android.R.layout.simple_list_item_1,arrayList);//simple_list_item_multiple_choice
+            listView.setAdapter (adapter);
+            //listView.setChoiceMode (ListView.CHOICE_MODE_MULTIPLE);
     }
 
-    /**Método para retornar sempre a data atual.*/
+    private void excluirItem(String idItem){
+        myDB.excluirDados (idItem);
+        mensagem.mensagemItemExcluidoSucess();
+    }
+    /**
+    * @Método para pegar sempre a data atual.
+    **/
     private String getDateTime() {
         DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
         Date date = new Date();
         return dateFormat.format(date);
     }
 
-    /**Método para listar registros do banco em um alerta,
-     * para selecionar o que o usuario quiser excluir.*/
-    private void listaDialog(){
-        Cursor res = myDB.getAllData();
-        CharSequence[] charSequences = new CharSequence[0];
+    /**
+     * @Método de pop-up apresentando estimativa
+     **/
+    private void alertResultado(double resultado){
+        final AlertDialog.Builder builder = new AlertDialog.Builder (this);
+        builder.setTitle("Deseja salvar calculo?");
+        builder.setMessage("Estimativa a pagar: R$ "+ resultado);
 
-        ArrayList<String> arrayList = new ArrayList<> ();
-        while(res.moveToNext()) {
-//            String id = res.getString(0);
-//            String data = res.getString(3);
-//            arrayList.add (data);
-//            String[] dados = new String[]{String.valueOf (arrayList)};
-//            final List<String> todasDatas = Arrays.asList (dados);
-            charSequences = new CharSequence[]{String.valueOf (res.getString (3)),"bla bla bla"};
+        builder.setPositiveButton ("Sim", new DialogInterface.OnClickListener () {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                salvandoOperacao ();
+            }
+        });
+        builder.setNegativeButton ("Não, fechar", new DialogInterface.OnClickListener () {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                mensagem.mensagemFechandoAlerta ();
+            }
+        });
+        AlertDialog alertDialog = builder.create ();
+        alertDialog.show ();
+    }
 
+    /**
+     * @Método Cria Menu (pop-up) opção 'Excluir' item da lista
+     **/
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        if (v.getId() == R.id.listView) {
+            menu.add("Excluir");
         }
-        System.out.println("-----------------------------------"+arrayList+"---------------------------------------------");
+    }
 
-
-        final boolean[] checados = new boolean[charSequences.length];
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(ctx);
-        builder.setTitle("Selecione para fazer nada.");
-        builder.setMultiChoiceItems(charSequences, checados, new DialogInterface.OnMultiChoiceClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which, boolean isChecked) {
-                checados[which] = isChecked;
-            }
-        });
-
-        builder.setPositiveButton("Confirmar", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                StringBuilder texto = new StringBuilder("Excluidos: ");
-                for(boolean ch : checados){
-                    texto.append(ch).append("; ");
-                }
-                Toast.makeText(ctx, texto.toString(), Toast.LENGTH_LONG).show();
-            }
-        });
-
-        AlertDialog alertDialog = builder.create();
-        alertDialog.show();
-
-
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+        switch (item.getItemId()) {
+            case 0:
+                arrayList.remove(info.position);
+                adapter.notifyDataSetChanged();
+        }
+        return true;
+    }
+    public void excluirItem(){
+        excluirItem (edtExcluir.getText ().toString ());
     }
 }
