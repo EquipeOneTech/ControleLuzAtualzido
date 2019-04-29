@@ -3,19 +3,31 @@ package com.example.medidor.calculo;
 import com.example.medidor.Principal;
 
 public class Calcular {
-    public static Integer numAnterior, numAtual;
-    public static double resultado, consumo;
-    public static double custoNormal = 0.6597;
-    public static double custoMaior = 0.84246;
+    public Integer numAnterior, numAtual;
+    public double resultado, consumo;
+    public double custoNormal = 0.6597;
+    public double custoMaior = 0.84246;
 
-    public static double calculando() {
+    public Integer getNumAnterior() {
+        return numAnterior;
+    }
 
-        /**Recebendo valores e convertendo para inteiro*/
-        numAnterior = Integer.parseInt(Principal.edtMedidaAnterior.getText().toString());
-        numAtual = Integer.parseInt(Principal.edtMedidaAtual.getText().toString());
+    public void setNumAnterior(Integer numAnterior) {
+        this.numAnterior = numAnterior;
+    }
+
+    public Integer getNumAtual() {
+        return numAtual;
+    }
+
+    public void setNumAtual(Integer numAtual) {
+        this.numAtual = numAtual;
+    }
+
+    public double calculando() {
 
         /**Calculando consumo para KWh(quilo watt / hora)*/
-        consumo = (numAtual - numAnterior) * 1;
+        consumo = (getNumAtual () - getNumAnterior ()) * 1;
 
         if (consumo <= 50) {
             return resultado = consumo * custoNormal;
