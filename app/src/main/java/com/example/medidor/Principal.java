@@ -70,6 +70,20 @@ public class Principal extends AppCompatActivity {
         consultar();
 
         /**
+         * @Ação excluir item da lista a partir do ID digitado no campo.
+         * */
+        btExcluir.setOnClickListener (new View.OnClickListener () {
+            @Override
+            public void onClick(View view) {
+                if(!edtExcluir.getText ().toString ().isEmpty ()) {
+                    excluirItem (edtExcluir.getText ().toString ());
+                }else{
+                    mensagem.mensagemCampoExcluirVazio();
+                }
+            }
+        });
+
+        /**
          * @Ação Click do Button Calcular
          **/
         btCalcular.setOnClickListener(new View.OnClickListener() {
@@ -127,7 +141,7 @@ public class Principal extends AppCompatActivity {
     }
 
     /**
-     * @Método que lista todos registros do banco na GridView.
+     * @Método que lista todos registros do banco na @ListView.
      **/
     private void consultar(){
         Cursor res = myDB.getAllData();
@@ -197,7 +211,5 @@ public class Principal extends AppCompatActivity {
         }
         return true;
     }
-    public void excluirItem(){
-        excluirItem (edtExcluir.getText ().toString ());
-    }
+
 }
