@@ -37,10 +37,8 @@ import java.util.Date;
 
 public class Principal extends AppCompatActivity {
     private Button btCalcular, btConsultar;
-    private ImageButton btExcluir;
     public  EditText edtMedidaAnterior;
     public  EditText edtMedidaAtual;
-    public  EditText edtExcluir;
     public  ListView listView;
     private Context ctx = this;
     private ArrayList<String> arrayList;
@@ -60,28 +58,14 @@ public class Principal extends AppCompatActivity {
         /**Declarando elementos em tela (Botões, textView, caixas de textos)*/
         btCalcular = (Button)findViewById(R.id.btCalcular);
         btConsultar = (Button)findViewById (R.id.btConsultarDados);
-        btExcluir = (ImageButton)findViewById(R.id.btExcluir);
         edtMedidaAnterior = (EditText)findViewById(R.id.edtMedidaAnterior);
         edtMedidaAtual = (EditText)findViewById(R.id.edtMedidaAtual);
-        edtExcluir = (EditText)findViewById (R.id.edtCampExcluir);
         listView = (ListView)findViewById (R.id.listView);
 
         registerForContextMenu (listView);
         consultar();
 
-        /**
-         * @Ação excluir item da lista a partir do ID digitado no campo.
-         * */
-        btExcluir.setOnClickListener (new View.OnClickListener () {
-            @Override
-            public void onClick(View view) {
-                if(!edtExcluir.getText ().toString ().isEmpty ()) {
-                    excluirItem (edtExcluir.getText ().toString ());
-                }else{
-                    mensagem.mensagemCampoExcluirVazio();
-                }
-            }
-        });
+
 
         /**
          * @Ação Click do Button Calcular
@@ -155,7 +139,6 @@ public class Principal extends AppCompatActivity {
     }
 
     private void excluirItem(String idItem){
-        myDB.excluirDados (idItem);
         mensagem.mensagemItemExcluidoSucess();
     }
     /**

@@ -18,4 +18,15 @@ public class Mensagem {
     public void mensagemDadosFalha(){
         Toast.makeText (this.context,"Falha ao salvar no operação!", Toast.LENGTH_LONG).show ();
     }
+    public void mensagemFechandoAlerta (){
+        Toast.makeText(this.context, "Nenhuma operação foi realizada.", Toast.LENGTH_LONG).show();
+    }
+
+    public void mensagemItemExcluidoSucess(){
+        Toast.makeText(this.context, "Item excluido com sucesso.", Toast.LENGTH_LONG).show();
+    }
+
+    public void mensagemNumAnteriorMaiorAtual(){
+        Toast.makeText(this.context, "O valor anterior não pode ser maior que o valor atual.", Toast.LENGTH_LONG).show();
+    }
 }
