@@ -167,7 +167,7 @@ public class Principal extends AppCompatActivity {
         builder.setNegativeButton ("Não, fechar", new DialogInterface.OnClickListener () {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                mensagem.mensagemFechandoAlerta ();
+                mensagem.mensagemFechandoAlerta (); 
             }
         });
         AlertDialog alertDialog = builder.create ();
