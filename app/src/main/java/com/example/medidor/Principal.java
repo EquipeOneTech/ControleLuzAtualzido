@@ -89,7 +89,8 @@ public class Principal extends AppCompatActivity {
                             }
 
                 }else{
-                    mensagem.mensagemCampoNull();
+                    edtMedidaAnterior.setError("Preencha o campo!");
+                    edtMedidaAtual.setError("Preencha o campo!");
                 }
 
             }
@@ -123,7 +124,7 @@ public class Principal extends AppCompatActivity {
             mensagem.mensagemDadosFalha();
         }
     }
-
+ 
     /**
      * @Método que lista todos registros do banco na @ListView.
      **/
@@ -167,7 +168,7 @@ public class Principal extends AppCompatActivity {
         builder.setNegativeButton ("Não, fechar", new DialogInterface.OnClickListener () {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                mensagem.mensagemFechandoAlerta (); 
+                mensagem.mensagemFechandoAlerta ();
             }
         });
         AlertDialog alertDialog = builder.create ();
