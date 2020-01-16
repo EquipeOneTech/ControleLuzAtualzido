@@ -3,7 +3,6 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/ControleLuzAtualzido.iml" filepath="$PROJECT_DIR$/ControleLuzAtualzido.iml" />
-      <module fileurl="file://$PROJECT_DIR$/Medidor.iml" filepath="$PROJECT_DIR$/Medidor.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>

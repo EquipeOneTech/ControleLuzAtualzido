@@ -157,7 +157,7 @@ public class Principal extends AppCompatActivity {
     private void alertResultado(double resultado){
         final AlertDialog.Builder builder = new AlertDialog.Builder (this);
         builder.setTitle("Deseja salvar calculo?");
-        builder.setMessage("Estimativa a pagar: R$ "+ resultado);
+        builder.setMessage(String.format("Estimativa a pagar: R$ %.2f", resultado));
 
         builder.setPositiveButton ("Sim", new DialogInterface.OnClickListener () {
             @Override
