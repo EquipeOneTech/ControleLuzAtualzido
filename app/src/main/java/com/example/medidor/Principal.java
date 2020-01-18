@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.database.Cursor;
-import android.graphics.Color;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -15,15 +14,11 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.GridView;
-import android.widget.ImageButton;
 import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.medidor.calculo.Calcular;
 import com.example.medidor.dataBase.DataBaseHelper;
-import com.example.medidor.mensagens_tela.Mensagem;
+import com.example.medidor.mensagens_tela.Utils;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -45,7 +40,6 @@ public class Principal extends AppCompatActivity {
     private ArrayAdapter<String> adapter;
     DataBaseHelper myDB;
     Calcular calcular;
-    Mensagem mensagem;
     @SuppressLint("WrongViewCast")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,7 +47,6 @@ public class Principal extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         myDB = new DataBaseHelper(ctx);
         calcular = new Calcular ();
-        mensagem = new Mensagem (ctx);
 
         /**Declarando elementos em tela (Botões, textView, caixas de textos)*/
         btCalcular = (Button)findViewById(R.id.btCalcular);
@@ -74,13 +67,13 @@ public class Principal extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 /**Testando se algum campo está vazio antes do calculo*/
-                if((edtMedidaAnterior.getText().length ()!=0) && (edtMedidaAtual.getText().length ()!=0)){
+                if((edtMedidaAnterior.getText().length() !=0) && (edtMedidaAtual.getText().length ()!=0)){
                     int numAnterior = Integer.parseInt (edtMedidaAnterior.getText().toString ());
                     int numAtual =Integer.parseInt (edtMedidaAtual.getText ().toString ());
 
                             /**@RN001- O campo Medida Anterior não pode ser maior ou igual o campo Medida Atual.*/
                             if(numAnterior >= numAtual){
-                                mensagem.mensagemNumAnteriorMaiorAtual ();
+                                Utils.mensagemNumAnteriorMaiorAtual(ctx);
                             }else{
                                 /**regatando valores para realizar calculo*/
                                 calcular.setNumAnterior (numAnterior);
@@ -113,15 +106,15 @@ public class Principal extends AppCompatActivity {
      **/
     private void salvandoOperacao(){
         String medidaAtual = calcular.getNumAtual().toString ();
-        String precoEstimado = String.valueOf (calcular.calculando ());
+        String precoEstimado = Utils.formatarValor(calcular.calculando ());
         String data = getDateTime();
         Boolean result = myDB.insertData(medidaAtual, precoEstimado,data);
 
         /**Testando retorno do método pra validar que salvou com sucesso.*/
         if(result == true){
-            mensagem.mensagemDadosSalvos();
+            Utils.mensagemDadosSalvos(ctx);
         }else{
-            mensagem.mensagemDadosFalha();
+            Utils.mensagemDadosFalha(ctx);
         }
     }
  
@@ -140,7 +133,7 @@ public class Principal extends AppCompatActivity {
     }
 
     private void excluirItem(String idItem){
-        mensagem.mensagemItemExcluidoSucess();
+        Utils.mensagemItemExcluidoSuccess(ctx);
     }
     /**
     * @Método para pegar sempre a data atual.
@@ -163,12 +156,15 @@ public class Principal extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 salvandoOperacao ();
+                consultar();
+                edtMedidaAnterior.setText("");
+                edtMedidaAtual.setText("");
             }
         });
         builder.setNegativeButton ("Não, fechar", new DialogInterface.OnClickListener () {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                mensagem.mensagemFechandoAlerta ();
+                Utils.mensagemFechandoAlerta (ctx);
             }
         });
         AlertDialog alertDialog = builder.create ();
