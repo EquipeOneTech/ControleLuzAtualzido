@@ -125,7 +125,7 @@ public class Principal extends AppCompatActivity {
         Cursor res = myDB.getAllData();
         arrayList = new ArrayList<> ();
             while (res.moveToNext ()){
-                arrayList.add (" ("+res.getString (0)+") "+res.getString (1)+" - "+res.getString (2)+" - "+res.getString (3));
+                arrayList.add (/*" ("+res.getString (0)+") "+*/res.getString (1)+" - "+res.getString (2)+" - "+res.getString (3));
             }
             adapter = new ArrayAdapter<> (this,android.R.layout.simple_list_item_1,arrayList);//simple_list_item_multiple_choice
             listView.setAdapter (adapter);
@@ -186,10 +186,17 @@ public class Principal extends AppCompatActivity {
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
         switch (item.getItemId()) {
             case 0:
-                arrayList.remove(info.position);
+                String value = getValueList(info.position);
+                myDB.excluir(value);
                 adapter.notifyDataSetChanged();
+                Utils.mensagemItemExcluidoSuccess(ctx);
+                consultar();
         }
         return true;
+    }
+    public String getValueList(int position){
+        String value = arrayList.get(position).substring(0,4);
+        return value.trim();
     }
 
 }

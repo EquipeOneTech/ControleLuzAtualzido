@@ -50,4 +50,11 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         Cursor res = db.rawQuery ("Select * from "+TABLE_HISTORICO,null);
         return res;
     }
+
+
+    public void excluir(String value){
+        SQLiteDatabase db = this.getWritableDatabase ();
+        db.execSQL("DELETE FROM "+ TABLE_HISTORICO + " WHERE ID = (SELECT ID FROM "+ TABLE_HISTORICO +" WHERE "+ COL_2 +" LIKE " +value+")");
+
+    }
 }
