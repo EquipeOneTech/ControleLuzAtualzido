@@ -74,6 +74,8 @@ public class Principal extends AppCompatActivity {
                             /**@RN001- O campo Medida Anterior não pode ser maior ou igual o campo Medida Atual.*/
                             if(numAnterior >= numAtual){
                                 Utils.mensagemNumAnteriorMaiorAtual(ctx);
+                                edtMedidaAnterior.setError("Valor inválido.");
+                                edtMedidaAtual.setError("Valor inválido.");
                             }else{
                                 /**regatando valores para realizar calculo*/
                                 calcular.setNumAnterior (numAnterior);

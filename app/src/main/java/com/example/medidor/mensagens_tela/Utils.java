@@ -1,6 +1,7 @@
 package com.example.medidor.mensagens_tela;
 
 import android.content.Context;
+import android.view.Gravity;
 import android.widget.Toast;
 
 public class Utils {
@@ -23,7 +24,9 @@ public class Utils {
     }
 
     public static void mensagemNumAnteriorMaiorAtual(final Context context){
-        Toast.makeText(context, "O valor anterior não pode ser maior que o valor atual.", Toast.LENGTH_LONG).show();
+        Toast toast = Toast.makeText(context, "O valor anterior não pode ser maior que o valor atual.", Toast.LENGTH_LONG);
+        toast.setGravity(Gravity.CENTER,0,0);
+        toast.show();
     }
 
     //criar metodo para formatar
