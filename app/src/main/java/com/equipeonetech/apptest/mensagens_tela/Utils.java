@@ -1,4 +1,4 @@
-package com.example.medidor.mensagens_tela;
+package com.equipeonetech.apptest.mensagens_tela;
 
 import android.content.Context;
 import android.view.Gravity;

@@ -1,24 +1,27 @@
-package com.example.medidor;
+package com.equipeonetech.apptest;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.database.Cursor;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.ContextMenu;
-import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.TextView;
 
-import com.example.medidor.calculo.Calcular;
-import com.example.medidor.dataBase.DataBaseHelper;
-import com.example.medidor.mensagens_tela.Utils;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+
+
+import com.equipeonetech.apptest.calculo.Calcular;
+import com.equipeonetech.apptest.dataBase.DataBaseHelper;
+import com.equipeonetech.apptest.mensagens_tela.Utils;
+import com.google.firebase.analytics.FirebaseAnalytics;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -30,8 +33,10 @@ import java.util.Date;
  * @email equipeonetech@gmail.com
  * */
 
-public class Principal extends AppCompatActivity {
+public class CalculateScreen extends AppCompatActivity {
     private Button btCalcular, btConsultar;
+    private ImageButton btConfigScreen;
+    private TextView txtViewGraphic;
     public  EditText edtMedidaAnterior;
     public  EditText edtMedidaAtual;
     public  ListView listView;
@@ -40,28 +45,54 @@ public class Principal extends AppCompatActivity {
     private ArrayAdapter<String> adapter;
     DataBaseHelper myDB;
     Calcular calcular;
+    private FirebaseAnalytics mFirebaseAnalytics;
+
     @SuppressLint("WrongViewCast")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_calculate);
+        // Obtain the FirebaseAnalytics instance.
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
+
+        //Others Screens
+        final Intent configScreen = new Intent (this, ConfigScreen.class);
+        final Intent graphicScreen = new Intent(this, GraphicScreen.class);
+
         myDB = new DataBaseHelper(ctx);
         calcular = new Calcular ();
 
         /**Declarando elementos em tela (Botões, textView, caixas de textos)*/
+        btConfigScreen = (ImageButton)findViewById(R.id.btConfigLuz);
+        txtViewGraphic = (TextView)findViewById(R.id.txtVerGraficos);
         btCalcular = (Button)findViewById(R.id.btCalcular);
         btConsultar = (Button)findViewById (R.id.btConsultarDados);
         edtMedidaAnterior = (EditText)findViewById(R.id.edtMedidaAnterior);
         edtMedidaAtual = (EditText)findViewById(R.id.edtMedidaAtual);
-        listView = (ListView)findViewById (R.id.listView);
 
-        registerForContextMenu (listView);
-        consultar();
+        /**
+         * @Action Click for TextView open the Graphics Screen
+         * **/
+        txtViewGraphic.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(graphicScreen);
+            }
+        });
 
+        /**
+         * @Action Click for Button open the Config Screen
+         * **/
+        btConfigScreen.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(configScreen);
+            }
+        });
 
 
         /**
-         * @Ação Click do Button Calcular
+         * @Action Click do Button Calcular
          **/
         btCalcular.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -119,7 +150,7 @@ public class Principal extends AppCompatActivity {
             Utils.mensagemDadosFalha(ctx);
         }
     }
- 
+
     /**
      * @Método que lista todos registros do banco na @ListView.
      **/
@@ -130,7 +161,7 @@ public class Principal extends AppCompatActivity {
                 arrayList.add (/*" ("+res.getString (0)+") "+*/res.getString (1)+" - "+res.getString (2)+" - "+res.getString (3));
             }
             adapter = new ArrayAdapter<> (this,android.R.layout.simple_list_item_1,arrayList);//simple_list_item_multiple_choice
-            listView.setAdapter (adapter);
+//            listView.setAdapter (adapter);
             //listView.setChoiceMode (ListView.CHOICE_MODE_MULTIPLE);
     }
 
@@ -176,29 +207,29 @@ public class Principal extends AppCompatActivity {
     /**
      * @Método Cria Menu (pop-up) opção 'Excluir' item da lista
      **/
-    @Override
-    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-        if (v.getId() == R.id.listView) {
-            menu.add("Excluir");
-        }
-    }
+//    @Override
+//    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+//        if (v.getId() == R.id.listView) {
+//            menu.add("Excluir");
+//        }
+//    }
 
-    @Override
-    public boolean onContextItemSelected(MenuItem item) {
-        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
-        switch (item.getItemId()) {
-            case 0:
-                String value = getValueList(info.position);
-                myDB.excluir(value);
-                adapter.notifyDataSetChanged();
-                Utils.mensagemItemExcluidoSuccess(ctx);
-                consultar();
-        }
-        return true;
-    }
-    public String getValueList(int position){
-        String value = arrayList.get(position).substring(0,4);
-        return value.trim();
-    }
+//    @Override
+//    public boolean onContextItemSelected(MenuItem item) {
+//        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+//        switch (item.getItemId()) {
+//            case 0:
+//                String value = getValueList(info.position);
+//                myDB.excluir(value);
+//                adapter.notifyDataSetChanged();
+//                Utils.mensagemItemExcluidoSuccess(ctx);
+//                consultar();
+//        }
+//        return true;
+//    }
+//    public String getValueList(int position){
+//        String value = arrayList.get(position).substring(0,4);
+//        return value.trim();
+//    }
 
 }

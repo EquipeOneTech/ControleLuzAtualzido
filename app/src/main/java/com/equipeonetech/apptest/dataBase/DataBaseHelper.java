@@ -1,4 +1,4 @@
-package com.example.medidor.dataBase;
+package com.equipeonetech.apptest.dataBase;
 
 import android.content.ContentValues;
 import android.content.Context;
