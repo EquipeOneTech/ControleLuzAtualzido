@@ -13,16 +13,12 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
-
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-
-
 import com.equipeonetech.apptest.calculo.Calcular;
 import com.equipeonetech.apptest.dataBase.DataBaseHelper;
 import com.equipeonetech.apptest.mensagens_tela.Utils;
 import com.google.firebase.analytics.FirebaseAnalytics;
-
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
