@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorCinza"
+    android:background="@color/newCinza"
     tools:context=".CalculateScreen">
 
     <EditText
@@ -17,6 +17,7 @@
         android:background="@drawable/shapeedittxt"
         android:ems="10"
         android:hint=" Medida KWh"
+        android:paddingLeft="8dp"
         android:inputType="numberDecimal"
         android:maxLength="4"
         android:shadowColor="@color/fundo2"
@@ -37,6 +38,7 @@
         android:background="@drawable/shapeedittxt"
         android:ems="10"
         android:hint=" Medida KWh"
+        android:paddingLeft="8dp"
         android:inputType="numberDecimal"
         android:maxLength="4"
         android:textColor="@color/colorPrimary"
@@ -88,7 +90,7 @@
         android:layout_marginStart="28dp"
         android:layout_marginLeft="28dp"
         android:layout_marginTop="24dp"
-        android:text="Medida (Kwh)"
+        android:text="Anterior (Kwh)"
         android:textColor="@color/colorPrimary"
         android:textSize="20dp"
         app:layout_constraintStart_toStartOf="parent"

@@ -17,7 +17,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import com.equipeonetech.apptest.calculo.Calcular;
 import com.equipeonetech.apptest.dataBase.DataBaseHelper;
-import com.equipeonetech.apptest.mensagens_tela.Utils;
+import com.equipeonetech.apptest.messages_screen.Utils;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -59,12 +59,7 @@ public class CalculateScreen extends AppCompatActivity {
         calcular = new Calcular ();
 
         /**Declarando elementos em tela (Botões, textView, caixas de textos)*/
-        btConfigScreen = (ImageButton)findViewById(R.id.btConfigLuz);
-        txtViewGraphic = (TextView)findViewById(R.id.txtVerGraficos);
-        btCalcular = (Button)findViewById(R.id.btCalcular);
-        btConsultar = (Button)findViewById (R.id.btConsultarDados);
-        edtMedidaAnterior = (EditText)findViewById(R.id.edtMedidaAnterior);
-        edtMedidaAtual = (EditText)findViewById(R.id.edtMedidaAtual);
+        initComponents();
 
         /**
          * @Action Click for TextView open the Graphics Screen
@@ -127,6 +122,15 @@ public class CalculateScreen extends AppCompatActivity {
                 consultar ();
             }
         });
+    }
+
+    private void initComponents() {
+        btConfigScreen = (ImageButton)findViewById(R.id.btConfigLuz);
+        txtViewGraphic = (TextView)findViewById(R.id.txtVerGraficos);
+        btCalcular = (Button)findViewById(R.id.btCalcular);
+        btConsultar = (Button)findViewById (R.id.btConsultarDados);
+        edtMedidaAnterior = (EditText)findViewById(R.id.edtMedidaAnterior);
+        edtMedidaAtual = (EditText)findViewById(R.id.edtMedidaAtual);
     }
 
 

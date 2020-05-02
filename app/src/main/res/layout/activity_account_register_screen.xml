@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/newCinza"
+    tools:context=".AccountRegisterScreen">
+
+    <Button
+        android:id="@+id/btVoltarCad"
+        android:layout_width="171dp"
+        android:layout_height="36dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="36dp"
+        android:background="@drawable/shapebutton"
+        android:backgroundTint="@color/colorPrimaryDark"
+        android:fontFamily="sans-serif-smallcaps"
+        android:text="Voltar"
+        android:textColor="@color/colorWhite"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/edtPasswordCad" />
+
+    <Button
+        android:id="@+id/btCriar"
+        android:layout_width="171dp"
+        android:layout_height="36dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="36dp"
+        android:background="@drawable/shapebutton"
+        android:backgroundTint="@color/colorPrimaryDark"
+        android:fontFamily="sans-serif-smallcaps"
+        android:text="Criar"
+        android:textColor="@color/colorWhite"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/btVoltarCad"
+        app:layout_constraintTop_toBottomOf="@+id/edtPasswordCad" />
+
+    <EditText
+        android:id="@+id/edtEmailCad"
+        android:layout_width="366dp"
+        android:layout_height="37dp"
+        android:layout_marginTop="36dp"
+        android:background="@drawable/shapeedittxt"
+        android:ems="10"
+        android:hint=" Email"
+        android:paddingLeft="8dp"
+        android:inputType="textEmailAddress"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.444"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView5" />
+
+    <EditText
+        android:id="@+id/edtPasswordCad"
+        android:layout_width="366dp"
+        android:layout_height="37dp"
+        android:layout_marginTop="12dp"
+        android:background="@drawable/shapeedittxt"
+        android:ems="10"
+        android:hint=" Password"
+        android:paddingLeft="8dp"
+        android:inputType="textPassword"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.444"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/edtEmailCad" />
+
+    <TextView
+        android:id="@+id/textView5"
+        android:layout_width="146dp"
+        android:layout_height="37dp"
+        android:layout_marginTop="32dp"
+        android:text="Cadastro"
+        android:textAlignment="center"
+        android:textSize="25dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+</androidx.constraintlayout.widget.ConstraintLayout>

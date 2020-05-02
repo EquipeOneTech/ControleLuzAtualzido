@@ -22,28 +22,44 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:id="@+id/btEntrar"
+        android:id="@+id/btCadastro"
         android:layout_width="245dp"
         android:layout_height="40dp"
-        android:layout_marginBottom="12dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/shapebutton"
+        android:backgroundTint="@color/colorWhite"
+        android:fontFamily="sans-serif-light"
+        android:text="Create account"
+        android:textColor="@color/colorPrimaryDark"
+        app:layout_constraintEnd_toEndOf="@+id/view"
+        app:layout_constraintHorizontal_bias="0.506"
+        app:layout_constraintStart_toStartOf="@+id/view"
+        app:layout_constraintTop_toBottomOf="@+id/btLogin" />
+
+    <Button
+        android:id="@+id/btLogin"
+        android:layout_width="245dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="148dp"
+        android:background="@drawable/shapebutton"
         android:backgroundTint="@color/colorPrimaryDark"
         android:fontFamily="sans-serif-light"
         android:text="Sign in"
-        android:background="@drawable/shapebutton"
         android:textColor="@color/colorWhite"
-        app:layout_constraintBottom_toBottomOf="@+id/view"
         app:layout_constraintEnd_toEndOf="@+id/view"
         app:layout_constraintHorizontal_bias="0.506"
-        app:layout_constraintStart_toStartOf="@+id/view" />
+        app:layout_constraintStart_toStartOf="@+id/view"
+        app:layout_constraintTop_toTopOf="@+id/view" />
 
     <EditText
-        android:id="@+id/editText2"
+        android:id="@+id/edtEmail"
         android:layout_width="281dp"
         android:layout_height="40dp"
-        android:layout_marginTop="68dp"
+        android:layout_marginTop="52dp"
         android:background="@drawable/shapeedittxt"
         android:ems="10"
         android:hint=" Email"
+        android:paddingLeft="8dp"
         android:inputType="textEmailAddress"
         android:shadowColor="@color/fundo2"
         app:layout_constraintEnd_toEndOf="@+id/view"
@@ -52,19 +68,20 @@
         app:layout_constraintTop_toTopOf="@+id/view" />
 
     <EditText
-        android:id="@+id/editText3"
+        android:id="@+id/edtPassword"
         android:layout_width="281dp"
         android:layout_height="40dp"
         android:background="@drawable/shapeedittxt"
         android:ems="10"
         android:hint=" Password"
+        android:paddingLeft="8dp"
         android:inputType="textPassword"
         android:shadowColor="@color/fundo2"
-        app:layout_constraintBottom_toTopOf="@+id/btEntrar"
+        app:layout_constraintBottom_toTopOf="@+id/btLogin"
         app:layout_constraintEnd_toEndOf="@+id/view"
         app:layout_constraintHorizontal_bias="0.512"
         app:layout_constraintStart_toStartOf="@+id/view"
-        app:layout_constraintTop_toBottomOf="@+id/editText2"
+        app:layout_constraintTop_toBottomOf="@+id/edtEmail"
         app:layout_constraintVertical_bias="0.142" />
 
     <TextView

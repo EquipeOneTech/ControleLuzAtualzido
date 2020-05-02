@@ -1,4 +1,4 @@
-package com.equipeonetech.apptest.mensagens_tela;
+package com.equipeonetech.apptest.messages_screen;
 
 import android.content.Context;
 import android.view.Gravity;
@@ -27,6 +27,13 @@ public class Utils {
         Toast toast = Toast.makeText(context, "O valor anterior não pode ser maior que o valor atual.", Toast.LENGTH_LONG);
         toast.setGravity(Gravity.CENTER,0,0);
         toast.show();
+    }
+
+    public static void mensagemSucessoLogin(final Context context){
+        Toast.makeText(context,"Login com Sucesso.", Toast.LENGTH_LONG).show();
+    }
+    public static void mensagemErrorLogin(final Context context){
+        Toast.makeText(context,"Error Login", Toast.LENGTH_LONG).show();
     }
 
     //criar metodo para formatar
