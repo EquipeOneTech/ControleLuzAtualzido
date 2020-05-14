@@ -1,8 +1,12 @@
-package com.equipeonetech.apptest.messages_screen;
+package com.equipeonetech.apptest.utils;
 
 import android.content.Context;
 import android.view.Gravity;
 import android.widget.Toast;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class Utils {
 
@@ -35,9 +39,32 @@ public class Utils {
     public static void mensagemErrorLogin(final Context context){
         Toast.makeText(context,"Error Login", Toast.LENGTH_LONG).show();
     }
+    public static void messageUserRegister(final Context context){
+        Toast.makeText(context,"Cadastro com sucesso.", Toast.LENGTH_LONG).show();
+    }
+
+    public static void messageDynamic(final Context context, String message){
+        Toast.makeText(context, message, Toast.LENGTH_LONG).show();
+    }
 
     //criar metodo para formatar
-    public static String formatarValor(double result){
+    public static String valueFormatter(double result){
         return String.format("%.2f",result);
+    }
+
+
+
+    /**
+     * @Método para pegar sempre a data atual.
+     **/
+    public static String getDateTime() {
+        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        Date date = new Date();
+        return dateFormat.format(date);
+    }
+
+    public static String formatterRegex(String value) {
+        return value.replaceAll("[^0-9.]", "").replaceAll("[,]",".");
+
     }
 }

@@ -6,13 +6,12 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.equipeonetech.apptest.conexion.Conexion;
-import com.equipeonetech.apptest.messages_screen.Utils;
+import com.equipeonetech.apptest.utils.Utils;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -22,6 +21,7 @@ public class LoginScreen extends AppCompatActivity {
     private Button btEntrar, btCadastro;
     private EditText edtEmail, edtPassword;
     private Context context = this;
+    private FirebaseAuth firebaseAuth;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,7 +35,12 @@ public class LoginScreen extends AppCompatActivity {
 
     /**Evento ao clicar no botao 'Create Account*/
     eventClickCreateAccount();
-}
+
+    //gambiarra
+        edtEmail.setText("teste1@email.com");
+        edtPassword.setText("12345678");
+
+    }
 
     private void eventClickCreateAccount() {
         btCadastro.setOnClickListener(new View.OnClickListener() {
@@ -65,12 +70,32 @@ public class LoginScreen extends AppCompatActivity {
                     edtEmail.setError("Email é obrigatório.");
                     edtPassword.setError("Password é obrigatório.");
                 }else {
-                    Toast.makeText(context,"Em testes", Toast.LENGTH_LONG).show();
+                    login(email, password);
                 }
 
             }
         });
     }
 
+    private void login(String email, String password){
+        firebaseAuth.signInWithEmailAndPassword(email, password)
+                .addOnCompleteListener(LoginScreen.this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if(task.isSuccessful()){
+                            Intent caculateScreen = new Intent(context, CalculateScreen.class);
+                            startActivity(caculateScreen);
+                            Utils.mensagemSucessoLogin(context);
+                        }else{
+                            Utils.messageDynamic(context, "Email ou senha invalido");
+                        }
+                    }
+                });
+    }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        firebaseAuth = Conexion.getFirebaseAuth();
+    }
 }

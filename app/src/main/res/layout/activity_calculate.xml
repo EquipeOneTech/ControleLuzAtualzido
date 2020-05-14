@@ -7,6 +7,7 @@
     android:background="@color/newCinza"
     tools:context=".CalculateScreen">
 
+
     <EditText
         android:id="@+id/edtMedidaAnterior"
         android:layout_width="166dp"
@@ -19,9 +20,9 @@
         android:hint=" Medida KWh"
         android:paddingLeft="8dp"
         android:inputType="numberDecimal"
-        android:maxLength="4"
+        android:maxLength="6"
         android:shadowColor="@color/fundo2"
-        android:textColor="@color/colorPrimary"
+        android:textColor="@color/colorBlack"
         android:textColorHint="@color/colorCinza"
         app:layout_constraintEnd_toStartOf="@+id/edtMedidaAtual"
         app:layout_constraintHorizontal_bias="0.5"
@@ -40,8 +41,8 @@
         android:hint=" Medida KWh"
         android:paddingLeft="8dp"
         android:inputType="numberDecimal"
-        android:maxLength="4"
-        android:textColor="@color/colorPrimary"
+        android:maxLength="6"
+        android:textColor="@color/colorBlack"
         android:textColorHint="@color/colorCinza"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
@@ -91,7 +92,7 @@
         android:layout_marginLeft="28dp"
         android:layout_marginTop="24dp"
         android:text="Anterior (Kwh)"
-        android:textColor="@color/colorPrimary"
+        android:textColor="@color/colorBlack"
         android:textSize="20dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -104,7 +105,7 @@
         android:layout_marginLeft="60dp"
         android:layout_marginTop="24dp"
         android:text="Atual (Kwh)"
-        android:textColor="@color/colorPrimary"
+        android:textColor="@color/colorBlack"
         android:textSize="20dp"
         app:layout_constraintStart_toEndOf="@+id/textView"
         app:layout_constraintTop_toTopOf="parent" />
@@ -122,11 +123,26 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
+        android:id="@+id/txtValorRecommend"
+        android:layout_width="94dp"
+        android:layout_height="22dp"
+        android:fontFamily="sans-serif-light"
+        android:textSize="15dp"
+        app:layout_constraintBottom_toBottomOf="@+id/view"
+        app:layout_constraintEnd_toEndOf="@+id/view"
+        app:layout_constraintHorizontal_bias="0.737"
+        app:layout_constraintStart_toStartOf="@+id/view"
+        app:layout_constraintTop_toTopOf="@+id/view"
+        app:layout_constraintVertical_bias="0.592" />
+
+    <TextView
         android:id="@+id/txtValorEstipulado"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="sans-serif-light"
         android:text="Valor recomendado:"
+        android:textStyle="bold"
+        android:textSize="12dp"
         app:layout_constraintBottom_toBottomOf="@+id/view"
         app:layout_constraintEnd_toEndOf="@+id/view"
         app:layout_constraintHorizontal_bias="0.319"
@@ -141,6 +157,7 @@
         android:layout_marginTop="116dp"
         android:fontFamily="sans-serif-light"
         android:text="Fatura atual"
+        android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/valorMes"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.291"
@@ -154,7 +171,6 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="164dp"
         android:text="R$ 127,33"
-        android:textColor="@color/colorPrimaryDark"
         android:textSize="50dp"
         app:layout_constraintBottom_toBottomOf="@+id/view"
         app:layout_constraintEnd_toEndOf="parent"
@@ -178,7 +194,7 @@
         android:id="@+id/txtVerGraficos"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Ver gráficos >>"
+        android:text="Ver estatísticas >>"
         android:textSize="15dp"
         android:textStyle="italic"
         app:layout_constraintBottom_toBottomOf="@+id/view"

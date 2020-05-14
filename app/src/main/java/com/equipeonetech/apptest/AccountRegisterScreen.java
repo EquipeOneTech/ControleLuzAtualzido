@@ -11,7 +11,7 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.equipeonetech.apptest.conexion.Conexion;
-import com.equipeonetech.apptest.messages_screen.Utils;
+import com.equipeonetech.apptest.utils.Utils;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -56,7 +56,7 @@ public class AccountRegisterScreen extends AppCompatActivity {
         btVoltar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent loginScreen = new Intent(context, AccountRegisterScreen.class);
+                Intent loginScreen = new Intent(context, LoginScreen.class);
                 startActivity(loginScreen);
                 finish();
             }
@@ -76,9 +76,9 @@ public class AccountRegisterScreen extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            Utils.mensagemSucessoLogin(context);
-                            final Intent calculateScreen = new Intent(context, CalculateScreen.class);
-                            startActivity(calculateScreen);
+                            Utils.messageUserRegister(context);
+                            final Intent profileScreen = new Intent(context, ProfileScreen.class);
+                            startActivity(profileScreen);
                             finish();
                         } else {
                             Utils.mensagemErrorLogin(context);

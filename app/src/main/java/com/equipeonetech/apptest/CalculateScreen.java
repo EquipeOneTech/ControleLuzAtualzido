@@ -6,6 +6,9 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -17,12 +20,10 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import com.equipeonetech.apptest.calculo.Calcular;
 import com.equipeonetech.apptest.dataBase.DataBaseHelper;
-import com.equipeonetech.apptest.messages_screen.Utils;
+import com.equipeonetech.apptest.utils.Utils;
 import com.google.firebase.analytics.FirebaseAnalytics;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
+
 import java.util.ArrayList;
-import java.util.Date;
 
 /**
  * @author Felipe Coelho
@@ -32,11 +33,11 @@ import java.util.Date;
 public class CalculateScreen extends AppCompatActivity {
     private Button btCalcular, btConsultar;
     private ImageButton btConfigScreen;
-    private TextView txtViewGraphic;
+    private TextView txtViewGraphic,txtValorRecommend, txtvalorMes;
     public  EditText edtMedidaAnterior;
     public  EditText edtMedidaAtual;
     public  ListView listView;
-    private Context ctx = this;
+    private Context context = this;
     private ArrayList<String> arrayList;
     private ArrayAdapter<String> adapter;
     DataBaseHelper myDB;
@@ -48,6 +49,14 @@ public class CalculateScreen extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_calculate);
+
+        /**Declarando elementos em tela (Botões, textView, caixas de textos)*/
+        initComponents();
+
+        /**Inicia Menu Options*/
+    //    initiMenuOptions();
+
+
         // Obtain the FirebaseAnalytics instance.
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
 
@@ -55,11 +64,13 @@ public class CalculateScreen extends AppCompatActivity {
         final Intent configScreen = new Intent (this, ConfigScreen.class);
         final Intent graphicScreen = new Intent(this, GraphicScreen.class);
 
-        myDB = new DataBaseHelper(ctx);
+        myDB = new DataBaseHelper(context);
         calcular = new Calcular ();
 
-        /**Declarando elementos em tela (Botões, textView, caixas de textos)*/
-        initComponents();
+        //getvalor recomendado test
+    //    setValorRecomendado();
+
+
 
         /**
          * @Action Click for TextView open the Graphics Screen
@@ -95,7 +106,7 @@ public class CalculateScreen extends AppCompatActivity {
 
                             /**@RN001- O campo Medida Anterior não pode ser maior ou igual o campo Medida Atual.*/
                             if(numAnterior >= numAtual){
-                                Utils.mensagemNumAnteriorMaiorAtual(ctx);
+                                Utils.mensagemNumAnteriorMaiorAtual(context);
                                 edtMedidaAnterior.setError("Valor inválido.");
                                 edtMedidaAtual.setError("Valor inválido.");
                             }else{
@@ -122,6 +133,84 @@ public class CalculateScreen extends AppCompatActivity {
                 consultar ();
             }
         });
+
+
+        /**Inicia valor recomendado*/
+        initValueRecommend();
+
+
+
+    }
+
+    /**Verificar valores e setar cor no texto*/
+    @SuppressLint("ResourceAsColor")
+    private void setColorValue(String currentValue, String recommendValue){
+        if (!currentValue.isEmpty() && !recommendValue.isEmpty()) {
+            float valueScreen = Integer.parseInt(Utils.formatterRegex(currentValue));
+            float recommendvlue = Integer.parseInt(Utils.formatterRegex(recommendValue));
+            if (valueScreen > recommendvlue) {
+                txtvalorMes.setTextColor(getResources().getColor(R.color.colorRed, getResources().newTheme()));
+            }else{
+                txtvalorMes.setTextColor(getResources().getColor(R.color.colorGreen, getResources().newTheme()));
+            }
+        }else {
+            txtvalorMes.setTextColor(getResources().getColor(R.color.colorBlack, getResources().newTheme()));
+        }
+
+
+    }
+
+    private void initValueRecommend() {
+        Cursor res = myDB.getAllDataRecomendTable();
+        StringBuffer stringBuffer = new StringBuffer();
+        if(res != null && res.getCount()>0) {
+            int cont = 0;
+            int v = res.getCount();
+            while (res.moveToNext()) {
+                if((v-1)==cont) {
+                    stringBuffer.append(res.getString(1));
+                }
+                cont++;
+            }
+        }
+        txtValorRecommend.setText(stringBuffer.toString());
+        setColorValue(txtvalorMes.getText().toString(), txtValorRecommend.getText().toString());
+
+
+    }
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.itProfile:
+                Intent profileScreen = new Intent(context, ProfileScreen.class);
+                startActivity(profileScreen);
+                finish();
+                return true;
+            case R.id.itHelp:
+                Utils.messageDynamic(context,"Em testes.");
+                return true;
+            case R.id.itLimparValorRecommend:
+                clearValueRecommend();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    private void clearValueRecommend() {
+        myDB.deleteAllValueRecommend();
+        Intent calculateScreen = new Intent(this, CalculateScreen.class);
+        startActivity(calculateScreen);
+        Utils.messageDynamic(context, "Valor recomendado excluido.");
     }
 
     private void initComponents() {
@@ -131,6 +220,8 @@ public class CalculateScreen extends AppCompatActivity {
         btConsultar = (Button)findViewById (R.id.btConsultarDados);
         edtMedidaAnterior = (EditText)findViewById(R.id.edtMedidaAnterior);
         edtMedidaAtual = (EditText)findViewById(R.id.edtMedidaAtual);
+        txtValorRecommend= (TextView)findViewById(R.id.txtValorRecommend);
+        txtvalorMes = (TextView)findViewById(R.id.valorMes);
     }
 
 
@@ -139,15 +230,15 @@ public class CalculateScreen extends AppCompatActivity {
      **/
     private void salvandoOperacao(){
         String medidaAtual = calcular.getNumAtual().toString ();
-        String precoEstimado = Utils.formatarValor(calcular.calculando ());
-        String data = getDateTime();
-        Boolean result = myDB.insertData(medidaAtual, precoEstimado,data);
+        String precoEstimado = Utils.valueFormatter(calcular.calculando ());
+        String data = Utils.getDateTime();
+        Boolean result = myDB.insertDataControleTable(medidaAtual, precoEstimado,data);
 
         /**Testando retorno do método pra validar que salvou com sucesso.*/
         if(result == true){
-            Utils.mensagemDadosSalvos(ctx);
+            Utils.mensagemDadosSalvos(context);
         }else{
-            Utils.mensagemDadosFalha(ctx);
+            Utils.mensagemDadosFalha(context);
         }
     }
 
@@ -155,7 +246,7 @@ public class CalculateScreen extends AppCompatActivity {
      * @Método que lista todos registros do banco na @ListView.
      **/
     private void consultar(){
-        Cursor res = myDB.getAllData();
+        Cursor res = myDB.getAllDataControleTable();
         arrayList = new ArrayList<> ();
             while (res.moveToNext ()){
                 arrayList.add (/*" ("+res.getString (0)+") "+*/res.getString (1)+" - "+res.getString (2)+" - "+res.getString (3));
@@ -166,16 +257,9 @@ public class CalculateScreen extends AppCompatActivity {
     }
 
     private void excluirItem(String idItem){
-        Utils.mensagemItemExcluidoSuccess(ctx);
+        Utils.mensagemItemExcluidoSuccess(context);
     }
-    /**
-    * @Método para pegar sempre a data atual.
-    **/
-    private String getDateTime() {
-        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-        Date date = new Date();
-        return dateFormat.format(date);
-    }
+
 
     /**
      * @Método de pop-up apresentando estimativa
@@ -197,7 +281,7 @@ public class CalculateScreen extends AppCompatActivity {
         builder.setNegativeButton ("Não, fechar", new DialogInterface.OnClickListener () {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                Utils.mensagemFechandoAlerta (ctx);
+                Utils.mensagemFechandoAlerta (context);
             }
         });
         AlertDialog alertDialog = builder.create ();

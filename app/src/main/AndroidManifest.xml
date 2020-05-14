@@ -11,7 +11,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".AccountRegisterScreen"></activity>
+        <activity android:name=".ProfileScreen"></activity>
+        <activity android:name=".AccountRegisterScreen" />
         <activity android:name=".GraphicScreen" />
         <activity android:name=".ConfigScreen" />
         <activity android:name=".CalculateScreen" />
