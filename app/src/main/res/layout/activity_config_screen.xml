@@ -4,15 +4,56 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ConfigScreen">
+    tools:context=".ConfigScreen"
+    android:background="@color/newCinza">
 
     <TextView
         android:id="@+id/textView3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="CONFIG Screen"
+        android:layout_width="385dp"
+        android:layout_height="50dp"
+        android:text="Estabeleça um valor limite \n para ser notificado ao atingir:"
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="17dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.615"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.039" />
+
+    <Button
+        android:id="@+id/btConfirmarValor"
+        android:layout_width="171dp"
+        android:layout_height="42dp"
+        android:background="@drawable/shapebutton"
+        android:backgroundTint="@color/colorPrimaryDark"
+        android:fontFamily="sans-serif-smallcaps"
+        android:text="Confirmar"
+        android:textColor="@color/colorWhite"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.933"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.197" />
+
+    <EditText
+        android:id="@+id/edtValorRecomendado"
+        android:layout_width="380dp"
+        android:layout_height="36dp"
+        android:background="@drawable/shapeedittxt"
+        android:ems="10"
+        android:hint=" R$ 200,00"
+        android:inputType="numberDecimal"
+        android:maxLength="10"
+        android:paddingLeft="8dp"
+        android:shadowColor="@color/fundo2"
+        android:textColor="@color/colorBlack"
+        android:textColorHint="@color/colorCinza"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.483"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.126" />
 </androidx.constraintlayout.widget.ConstraintLayout>
