@@ -4,6 +4,8 @@
         android:title="Perfil" />
     <item android:id="@+id/itHelp"
         android:title="Ajuda" />
+    <item android:id="@+id/itCadastrarCont"
+        android:title="Cadastrar conta\"/>
     <item android:id="@+id/itLimparValorRecommend"
         android:title="Limpar Valor Recomendado"/>
 </menu>
