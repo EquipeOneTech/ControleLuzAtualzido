@@ -2,7 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/AndroidStudioProjects-AppTest.iml" filepath="$PROJECT_DIR$/AndroidStudioProjects-AppTest.iml" group="AppTest" />
       <module fileurl="file://$PROJECT_DIR$/AppTest.iml" filepath="$PROJECT_DIR$/AppTest.iml" group="AppTest" />
+      <module fileurl="file://$PROJECT_DIR$/app/AppTest-app.iml" filepath="$PROJECT_DIR$/app/AppTest-app.iml" group="AppTest/app" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" group="AppTest/app" />
     </modules>
   </component>

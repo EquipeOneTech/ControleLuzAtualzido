@@ -25,6 +25,8 @@ public class ConfigScreen extends AppCompatActivity {
         setContentView(R.layout.activity_config_screen);
 
 
+        
+
         /**Inicia Componentes*/
         initComponent();
         edtValorRecomendado.addTextChangedListener(MaskEditUtils.mask(edtValorRecomendado, MaskEditUtils.FORMAT_MONEY));
