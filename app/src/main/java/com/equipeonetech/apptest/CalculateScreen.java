@@ -18,7 +18,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import com.equipeonetech.apptest.calculo.Calcular;
+import com.equipeonetech.apptest.calculate.Calculator;
 import com.equipeonetech.apptest.dataBase.DataBaseHelper;
 import com.equipeonetech.apptest.utils.Utils;
 import com.google.firebase.analytics.FirebaseAnalytics;
@@ -41,7 +41,7 @@ public class CalculateScreen extends AppCompatActivity {
     private ArrayList<String> arrayList;
     private ArrayAdapter<String> adapter;
     DataBaseHelper myDB;
-    Calcular calcular;
+    Calculator calculator;
     private FirebaseAnalytics mFirebaseAnalytics;
 
     @SuppressLint("WrongViewCast")
@@ -65,7 +65,7 @@ public class CalculateScreen extends AppCompatActivity {
         final Intent graphicScreen = new Intent(this, GraphicScreen.class);
 
         myDB = new DataBaseHelper(context);
-        calcular = new Calcular ();
+        calculator = new Calculator();
 
         //getvalor recomendado test
     //    setValorRecomendado();
@@ -111,9 +111,9 @@ public class CalculateScreen extends AppCompatActivity {
                                 edtMedidaAtual.setError("Valor inválido.");
                             }else{
                                 /**regatando valores para realizar calculo*/
-                                calcular.setNumAnterior (numAnterior);
-                                calcular.setNumAtual (numAtual);
-                                alertResultado (calcular.calculando ());
+                                calculator.setNumAnterior (numAnterior);
+                                calculator.setNumAtual (numAtual);
+                                alertResultado (calculator.calculando ());
                             }
 
                 }else{
@@ -229,8 +229,8 @@ public class CalculateScreen extends AppCompatActivity {
      * @Método que resgata o valor dos campos e salva no banco (insert).
      **/
     private void salvandoOperacao(){
-        String medidaAtual = calcular.getNumAtual().toString ();
-        String precoEstimado = Utils.valueFormatter(calcular.calculando ());
+        String medidaAtual = calculator.getNumAtual().toString ();
+        String precoEstimado = Utils.valueFormatter(calculator.calculando ());
         String data = Utils.getDateTime();
         Boolean result = myDB.insertDataControleTable(medidaAtual, precoEstimado,data);
 
