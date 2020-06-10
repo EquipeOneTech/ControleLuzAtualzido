@@ -85,6 +85,7 @@ public class LoginScreen extends AppCompatActivity {
                         if(task.isSuccessful()){
                             Intent caculateScreen = new Intent(context, CalculateScreen.class);
                             startActivity(caculateScreen);
+                            finish();
                             Utils.mensagemSucessoLogin(context);
                         }else{
                             Utils.messageDynamic(context, "Email ou senha invalido");

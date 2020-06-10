@@ -41,6 +41,7 @@ public class ConfigScreen extends AppCompatActivity {
                 String valorRecomend = edtValorRecomendado.getText().toString();
                 String data = Utils.getDateTime();
                 if(valorRecomend.length()>0) {
+                    myDB.deleteAllValueRecommend();
                     Boolean result = myDB.insertDataRecomendTable(valorRecomend, data);
 
                     /**Testando retorno do método pra validar que salvou com sucesso.*/

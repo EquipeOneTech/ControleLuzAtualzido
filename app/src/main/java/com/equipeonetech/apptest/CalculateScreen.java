@@ -20,9 +20,11 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import com.equipeonetech.apptest.calculate.Calculator;
 import com.equipeonetech.apptest.dataBase.DataBaseHelper;
+import com.equipeonetech.apptest.sevices.RequestHost;
 import com.equipeonetech.apptest.utils.Utils;
 import com.google.firebase.analytics.FirebaseAnalytics;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 /**
@@ -33,7 +35,7 @@ import java.util.ArrayList;
 public class CalculateScreen extends AppCompatActivity {
     private Button btCalcular, btConsultar;
     private ImageButton btConfigScreen;
-    private TextView txtViewGraphic,txtValorRecommend, txtvalorMes;
+    private TextView txtViewGraphic,txtValorRecommend, txtValorMes;
     public  EditText edtMedidaAnterior;
     public  EditText edtMedidaAtual;
     public  ListView listView;
@@ -49,6 +51,11 @@ public class CalculateScreen extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_calculate);
+
+        /**
+         * CRIANDO REQUEST PARA BUSCAR MEDIDA DO HOST
+         * */
+        final RequestHost requestHost = new RequestHost();
 
         /**Declarando elementos em tela (Botões, textView, caixas de textos)*/
         initComponents();
@@ -100,7 +107,7 @@ public class CalculateScreen extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 /**Testando se algum campo está vazio antes do calculo*/
-                if((edtMedidaAnterior.getText().length() !=0) && (edtMedidaAtual.getText().length ()!=0)){
+                if((!edtMedidaAnterior.getText().toString().isEmpty()) && (!edtMedidaAtual.getText().toString().isEmpty())){
                     int numAnterior = Integer.parseInt (edtMedidaAnterior.getText().toString ());
                     int numAtual =Integer.parseInt (edtMedidaAtual.getText ().toString ());
 
@@ -130,7 +137,11 @@ public class CalculateScreen extends AppCompatActivity {
         btConsultar.setOnClickListener (new View.OnClickListener () {
             @Override
             public void onClick(View view) {
-                consultar ();
+                try {
+                    txtValorMes.setText(requestHost.run("http://192.168.15.26/:3097/medidorLigth"));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         });
 
@@ -149,12 +160,12 @@ public class CalculateScreen extends AppCompatActivity {
             float valueScreen = Integer.parseInt(Utils.formatterRegex(currentValue));
             float recommendvlue = Integer.parseInt(Utils.formatterRegex(recommendValue));
             if (valueScreen > recommendvlue) {
-                txtvalorMes.setTextColor(getResources().getColor(R.color.colorRed, getResources().newTheme()));
+                txtValorMes.setTextColor(getResources().getColor(R.color.colorRed, getResources().newTheme()));
             }else{
-                txtvalorMes.setTextColor(getResources().getColor(R.color.colorGreen, getResources().newTheme()));
+                txtValorMes.setTextColor(getResources().getColor(R.color.colorGreen, getResources().newTheme()));
             }
         }else {
-            txtvalorMes.setTextColor(getResources().getColor(R.color.colorBlack, getResources().newTheme()));
+            txtValorMes.setTextColor(getResources().getColor(R.color.colorBlack, getResources().newTheme()));
         }
 
 
@@ -174,7 +185,7 @@ public class CalculateScreen extends AppCompatActivity {
             }
         }
         txtValorRecommend.setText(stringBuffer.toString());
-        setColorValue(txtvalorMes.getText().toString(), txtValorRecommend.getText().toString());
+        setColorValue(txtValorMes.getText().toString(), txtValorRecommend.getText().toString());
 
 
     }
@@ -201,6 +212,10 @@ public class CalculateScreen extends AppCompatActivity {
             case R.id.itLimparValorRecommend:
                 clearValueRecommend();
                 return true;
+            case R.id.itCadastrarCont:
+                Intent registerElectricity = new Intent(context, RegisterElectricityScreen.class);
+                startActivity(registerElectricity);
+                finish();
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -221,7 +236,7 @@ public class CalculateScreen extends AppCompatActivity {
         edtMedidaAnterior = (EditText)findViewById(R.id.edtMedidaAnterior);
         edtMedidaAtual = (EditText)findViewById(R.id.edtMedidaAtual);
         txtValorRecommend= (TextView)findViewById(R.id.txtValorRecommend);
-        txtvalorMes = (TextView)findViewById(R.id.valorMes);
+        txtValorMes = (TextView)findViewById(R.id.valorMes);
     }
 
 
