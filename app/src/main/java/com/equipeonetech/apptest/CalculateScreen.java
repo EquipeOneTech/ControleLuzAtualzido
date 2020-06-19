@@ -16,13 +16,23 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
+
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.equipeonetech.apptest.calculate.Calculator;
 import com.equipeonetech.apptest.dataBase.DataBaseHelper;
 import com.equipeonetech.apptest.sevices.RequestHost;
 import com.equipeonetech.apptest.utils.Utils;
 import com.google.firebase.analytics.FirebaseAnalytics;
+
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -30,15 +40,15 @@ import java.util.ArrayList;
 /**
  * @author Felipe Coelho
  * @email equipeonetech@gmail.com
- * */
+ */
 
 public class CalculateScreen extends AppCompatActivity {
-    private Button btCalcular, btConsultar;
+    private Button btCalcular, btAtualizar;
+    private View view;
     private ImageButton btConfigScreen;
-    private TextView txtViewGraphic,txtValorRecommend, txtValorMes;
-    public  EditText edtMedidaAnterior;
-    public  EditText edtMedidaAtual;
-    public  ListView listView;
+    private TextView txtViewGraphic, txtValorRecommend, txtValorMes;
+    public EditText edtMedidaAnterior, edtMedidaAtual;
+    public ListView listView;
     private Context context = this;
     private ArrayList<String> arrayList;
     private ArrayAdapter<String> adapter;
@@ -52,40 +62,82 @@ public class CalculateScreen extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_calculate);
 
+        // Obtain the FirebaseAnalytics instance.
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
+
         /**
          * CRIANDO REQUEST PARA BUSCAR MEDIDA DO HOST
          * */
-        final RequestHost requestHost = new RequestHost();
+        getValueHost();
 
         /**Declarando elementos em tela (Botões, textView, caixas de textos)*/
         initComponents();
 
-        /**Inicia Menu Options*/
-    //    initiMenuOptions();
-
-
-        // Obtain the FirebaseAnalytics instance.
-        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
-
-        //Others Screens
-        final Intent configScreen = new Intent (this, ConfigScreen.class);
-        final Intent graphicScreen = new Intent(this, GraphicScreen.class);
-
         myDB = new DataBaseHelper(context);
         calculator = new Calculator();
 
-        //getvalor recomendado test
-    //    setValorRecomendado();
+        /**Event Clinks*/
+        eventClicks();
 
+        /**Set color black if isEmpty*/
+        if(txtValorRecommend.getText().toString().isEmpty()){
+            txtValorMes.setTextColor(getResources().getColor(R.color.colorBlack, getResources().newTheme()));
+        }
+
+    }
+
+
+    private void eventClicks() {
+        /**Click view for load colors*/
+        txtValorMes.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                /**Inicia valor recomendado*/
+                if(txtValorRecommend.getText().toString().isEmpty()) {
+                    initValueRecommend();
+                }
+            }
+        });
 
 
         /**
-         * @Action Click for TextView open the Graphics Screen
-         * **/
-        txtViewGraphic.setOnClickListener(new View.OnClickListener() {
+         * @Ação Click do Button Consultar Outros Meses
+         **/
+        btAtualizar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(graphicScreen);
+                getValueHost();
+            }
+        });
+
+        /**
+         * @Action Click do Button Calcular
+         **/
+        btCalcular.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                /**Testando se algum campo está vazio antes do calculo*/
+                if ((!edtMedidaAnterior.getText().toString().isEmpty()) && (!edtMedidaAtual.getText().toString().isEmpty())) {
+                    int numAnterior = Integer.parseInt(edtMedidaAnterior.getText().toString());
+                    int numAtual = Integer.parseInt(edtMedidaAtual.getText().toString());
+
+                    /**@RN001- O campo Medida Anterior não pode ser maior ou igual o campo Medida Atual.*/
+                    if (numAnterior >= numAtual) {
+                        Utils.mensagemNumAnteriorMaiorAtual(context);
+                        edtMedidaAnterior.setError("Valor inválido.");
+                        edtMedidaAtual.setError("Valor inválido.");
+                    } else {
+                        /**regatando valores para realizar calculo*/
+                        calculator.setNumAnterior(numAnterior);
+                        calculator.setNumAtual(numAtual);
+                        alertResultado(calculator.calculando());
+                    }
+
+                } else {
+                    edtMedidaAnterior.setError("Preencha o campo!");
+                    edtMedidaAtual.setError("Preencha o campo!");
+                }
+
             }
         });
 
@@ -95,90 +147,53 @@ public class CalculateScreen extends AppCompatActivity {
         btConfigScreen.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                final Intent configScreen = new Intent(context, ConfigScreen.class);
                 startActivity(configScreen);
+                finish();
             }
         });
 
 
         /**
-         * @Action Click do Button Calcular
-         **/
-        btCalcular.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                /**Testando se algum campo está vazio antes do calculo*/
-                if((!edtMedidaAnterior.getText().toString().isEmpty()) && (!edtMedidaAtual.getText().toString().isEmpty())){
-                    int numAnterior = Integer.parseInt (edtMedidaAnterior.getText().toString ());
-                    int numAtual =Integer.parseInt (edtMedidaAtual.getText ().toString ());
-
-                            /**@RN001- O campo Medida Anterior não pode ser maior ou igual o campo Medida Atual.*/
-                            if(numAnterior >= numAtual){
-                                Utils.mensagemNumAnteriorMaiorAtual(context);
-                                edtMedidaAnterior.setError("Valor inválido.");
-                                edtMedidaAtual.setError("Valor inválido.");
-                            }else{
-                                /**regatando valores para realizar calculo*/
-                                calculator.setNumAnterior (numAnterior);
-                                calculator.setNumAtual (numAtual);
-                                alertResultado (calculator.calculando ());
-                            }
-
-                }else{
-                    edtMedidaAnterior.setError("Preencha o campo!");
-                    edtMedidaAtual.setError("Preencha o campo!");
-                }
-
-            }
-        });
-
-        /**
-         * @Ação Click do Button Consultar Outros Meses
-         **/
-        btConsultar.setOnClickListener (new View.OnClickListener () {
+         * @Action Click for TextView open the Graphics Screen
+         * **/
+        txtViewGraphic.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                try {
-                    txtValorMes.setText(requestHost.run("http://192.168.15.26/:3097/medidorLigth"));
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                final Intent graphicScreen = new Intent(context, GraphicScreen.class);
+                startActivity(graphicScreen);
+                finish();
             }
         });
-
-
-        /**Inicia valor recomendado*/
-        initValueRecommend();
-
-
 
     }
 
-    /**Verificar valores e setar cor no texto*/
+    /**
+     * Verificar valores e setar cor no texto
+     */
     @SuppressLint("ResourceAsColor")
-    private void setColorValue(String currentValue, String recommendValue){
-        if (!currentValue.isEmpty() && !recommendValue.isEmpty()) {
-            float valueScreen = Integer.parseInt(Utils.formatterRegex(currentValue));
-            float recommendvlue = Integer.parseInt(Utils.formatterRegex(recommendValue));
-            if (valueScreen > recommendvlue) {
-                txtValorMes.setTextColor(getResources().getColor(R.color.colorRed, getResources().newTheme()));
-            }else{
-                txtValorMes.setTextColor(getResources().getColor(R.color.colorGreen, getResources().newTheme()));
-            }
-        }else {
+    private void setColorValue(String currentValue, String recommendValue) {
+        float valueScreen = Integer.parseInt(Utils.formatterRegex(currentValue));
+        float recommendvlue = Integer.parseInt(Utils.formatterRegex(recommendValue));
+
+        if (valueScreen > recommendvlue) {
+            txtValorMes.setTextColor(getResources().getColor(R.color.colorRed, getResources().newTheme()));
+        } else {
+            txtValorMes.setTextColor(getResources().getColor(R.color.colorGreen, getResources().newTheme()));
+        }
+        if (recommendValue.isEmpty()) {
             txtValorMes.setTextColor(getResources().getColor(R.color.colorBlack, getResources().newTheme()));
         }
-
-
     }
 
     private void initValueRecommend() {
         Cursor res = myDB.getAllDataRecomendTable();
         StringBuffer stringBuffer = new StringBuffer();
-        if(res != null && res.getCount()>0) {
+        if (res != null && res.getCount() > 0) {
             int cont = 0;
             int v = res.getCount();
             while (res.moveToNext()) {
-                if((v-1)==cont) {
+                if ((v - 1) == cont) {
                     stringBuffer.append(res.getString(1));
                 }
                 cont++;
@@ -186,8 +201,6 @@ public class CalculateScreen extends AppCompatActivity {
         }
         txtValorRecommend.setText(stringBuffer.toString());
         setColorValue(txtValorMes.getText().toString(), txtValorRecommend.getText().toString());
-
-
     }
 
 
@@ -207,7 +220,7 @@ public class CalculateScreen extends AppCompatActivity {
                 finish();
                 return true;
             case R.id.itHelp:
-                Utils.messageDynamic(context,"Em testes.");
+                Utils.messageDynamic(context, "Em testes.");
                 return true;
             case R.id.itLimparValorRecommend:
                 clearValueRecommend();
@@ -229,30 +242,30 @@ public class CalculateScreen extends AppCompatActivity {
     }
 
     private void initComponents() {
-        btConfigScreen = (ImageButton)findViewById(R.id.btConfigLuz);
-        txtViewGraphic = (TextView)findViewById(R.id.txtVerGraficos);
-        btCalcular = (Button)findViewById(R.id.btCalcular);
-        btConsultar = (Button)findViewById (R.id.btConsultarDados);
-        edtMedidaAnterior = (EditText)findViewById(R.id.edtMedidaAnterior);
-        edtMedidaAtual = (EditText)findViewById(R.id.edtMedidaAtual);
-        txtValorRecommend= (TextView)findViewById(R.id.txtValorRecommend);
-        txtValorMes = (TextView)findViewById(R.id.valorMes);
+        btConfigScreen = (ImageButton) findViewById(R.id.btConfigLuz);
+        txtViewGraphic = (TextView) findViewById(R.id.txtVerGraficos);
+        btCalcular = (Button) findViewById(R.id.btCalcular);
+        btAtualizar = (Button) findViewById(R.id.btAtualiza);
+        edtMedidaAnterior = (EditText) findViewById(R.id.edtMedidaAnterior);
+        edtMedidaAtual = (EditText) findViewById(R.id.edtMedidaAtual);
+        txtValorRecommend = (TextView) findViewById(R.id.txtValorRecommend);
+        txtValorMes = (TextView) findViewById(R.id.valorMes);
     }
 
 
     /**
      * @Método que resgata o valor dos campos e salva no banco (insert).
      **/
-    private void salvandoOperacao(){
-        String medidaAtual = calculator.getNumAtual().toString ();
-        String precoEstimado = Utils.valueFormatter(calculator.calculando ());
+    private void salvandoOperacao() {
+        String medidaAtual = calculator.getNumAtual().toString();
+        String precoEstimado = Utils.valueFormatter(calculator.calculando());
         String data = Utils.getDateTime();
-        Boolean result = myDB.insertDataControleTable(medidaAtual, precoEstimado,data);
+        Boolean result = myDB.insertDataControleTable(medidaAtual, precoEstimado, data);
 
         /**Testando retorno do método pra validar que salvou com sucesso.*/
-        if(result == true){
+        if (result == true) {
             Utils.mensagemDadosSalvos(context);
-        }else{
+        } else {
             Utils.mensagemDadosFalha(context);
         }
     }
@@ -260,18 +273,18 @@ public class CalculateScreen extends AppCompatActivity {
     /**
      * @Método que lista todos registros do banco na @ListView.
      **/
-    private void consultar(){
+    private void consultar() {
         Cursor res = myDB.getAllDataControleTable();
-        arrayList = new ArrayList<> ();
-            while (res.moveToNext ()){
-                arrayList.add (/*" ("+res.getString (0)+") "+*/res.getString (1)+" - "+res.getString (2)+" - "+res.getString (3));
-            }
-            adapter = new ArrayAdapter<> (this,android.R.layout.simple_list_item_1,arrayList);//simple_list_item_multiple_choice
+        arrayList = new ArrayList<>();
+        while (res.moveToNext()) {
+            arrayList.add(/*" ("+res.getString (0)+") "+*/res.getString(1) + " - " + res.getString(2) + " - " + res.getString(3));
+        }
+        adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, arrayList);//simple_list_item_multiple_choice
 //            listView.setAdapter (adapter);
-            //listView.setChoiceMode (ListView.CHOICE_MODE_MULTIPLE);
+        //listView.setChoiceMode (ListView.CHOICE_MODE_MULTIPLE);
     }
 
-    private void excluirItem(String idItem){
+    private void excluirItem(String idItem) {
         Utils.mensagemItemExcluidoSuccess(context);
     }
 
@@ -279,28 +292,28 @@ public class CalculateScreen extends AppCompatActivity {
     /**
      * @Método de pop-up apresentando estimativa
      **/
-    private void alertResultado(double resultado){
-        final AlertDialog.Builder builder = new AlertDialog.Builder (this);
+    private void alertResultado(double resultado) {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Deseja salvar calculo?");
         builder.setMessage(String.format("Estimativa a pagar: R$ %.2f", resultado));
 
-        builder.setPositiveButton ("Sim", new DialogInterface.OnClickListener () {
+        builder.setPositiveButton("Sim", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                salvandoOperacao ();
+                salvandoOperacao();
                 consultar();
                 edtMedidaAnterior.setText("");
                 edtMedidaAtual.setText("");
             }
         });
-        builder.setNegativeButton ("Não, fechar", new DialogInterface.OnClickListener () {
+        builder.setNegativeButton("Não, fechar", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                Utils.mensagemFechandoAlerta (context);
+                Utils.mensagemFechandoAlerta(context);
             }
         });
-        AlertDialog alertDialog = builder.create ();
-        alertDialog.show ();
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
     }
 
     /**
@@ -330,5 +343,41 @@ public class CalculateScreen extends AppCompatActivity {
 //        String value = arrayList.get(position).substring(0,4);
 //        return value.trim();
 //    }
+    public void getValueHost() {
+        RequestQueue queue = Volley.newRequestQueue(this.context);
+        String url = "http://192.168.15.26:3097/medidorLigth";
+
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+
+                try {
+                    JSONObject jsonObject = new JSONObject(response);
+                    String currentValue = jsonObject.getString("valorAtual");
+                    setValueFormatted(currentValue);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    txtValorMes.setText("errou");
+                }
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Utils.messageDynamic(context, String.valueOf(error));
+            }
+        });
+
+        queue.add(stringRequest);
+    }
+
+    public void setValueFormatted(String valueFormatted) {
+        calculator.setNumAnterior(0);
+        calculator.setNumAtual(Integer.parseInt(valueFormatted));
+
+        String valueMonth = Utils.valueFormatter(calculator.calculando());
+
+        txtValorMes.setText("R$ " + valueMonth);
+    }
 
 }

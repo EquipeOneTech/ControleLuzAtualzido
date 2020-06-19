@@ -1,7 +1,9 @@
 package com.equipeonetech.apptest;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -34,7 +36,21 @@ public class GraphicScreen extends AppCompatActivity {
 
         /**Set and initi value in the graph*/
         setColumnGraph();
+
+        /**Event Clicks*/
+        eventClicks();
    }
+
+    private void eventClicks() {
+        btVoltar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent calculateScreen = new Intent(context, CalculateScreen.class);
+                startActivity(calculateScreen);
+                finish();
+            }
+        });
+    }
 
     private void setColumnGraph() {
         Cartesian cartesian = AnyChart.column();
@@ -79,6 +95,6 @@ public class GraphicScreen extends AppCompatActivity {
 
     private void initComponents() {
         anyChartView = findViewById(R.id.myColumnGraph);
-        btVoltar = findViewById(R.id.btVoltar);
+        btVoltar = findViewById(R.id.btVoltarGraph);
     }
 }

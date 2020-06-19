@@ -34,7 +34,7 @@ public class Utils {
     }
 
     public static void mensagemSucessoLogin(final Context context){
-        Toast.makeText(context,"Login com Sucesso.", Toast.LENGTH_LONG).show();
+        Toast.makeText(context,"Login com Sucesso.", Toast.LENGTH_SHORT).show();
     }
     public static void mensagemErrorLogin(final Context context){
         Toast.makeText(context,"Error Login", Toast.LENGTH_LONG).show();

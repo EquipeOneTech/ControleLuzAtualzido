@@ -15,7 +15,7 @@
         tools:layout_editor_absoluteX="53dp" />
 
     <Button
-        android:id="@+id/btVoltar"
+        android:id="@+id/btVoltarGraph"
         style="@style/Widget.AppCompat.Button"
         android:layout_width="172dp"
         android:layout_height="35dp"
@@ -26,7 +26,6 @@
         android:backgroundTint="@color/colorPrimaryDark"
         android:fontFamily="sans-serif-smallcaps"
         android:text="Voltar"
-
         android:textColor="@color/colorWhite" />
 
 

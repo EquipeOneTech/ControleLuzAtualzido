@@ -63,11 +63,11 @@
         android:textColor="@color/colorWhite"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.766"
-        app:layout_constraintStart_toEndOf="@+id/btConsultarDados"
+        app:layout_constraintStart_toEndOf="@+id/btAtualiza"
         app:layout_constraintTop_toBottomOf="@+id/edtMedidaAtual" />
 
     <Button
-        android:id="@+id/btConsultarDados"
+        android:id="@+id/btAtualiza"
         style="@style/Widget.AppCompat.Button"
         android:layout_width="165dp"
         android:layout_height="52dp"
@@ -76,7 +76,7 @@
         android:background="@drawable/shapebutton"
         android:backgroundTint="@color/colorPrimaryDark"
         android:fontFamily="sans-serif-smallcaps"
-        android:text="Atualizar Lista"
+        android:text="Atualizar"
         android:textColor="@color/colorWhite"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/edtMedidaAnterior" />
@@ -167,7 +167,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="164dp"
-        android:text="R$ 127,33"
         android:textSize="50dp"
         app:layout_constraintBottom_toBottomOf="@+id/view"
         app:layout_constraintEnd_toEndOf="parent"
