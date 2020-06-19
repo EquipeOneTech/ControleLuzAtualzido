@@ -65,6 +65,6 @@ public class Utils {
 
     public static String formatterRegex(String value) {
         return value.replaceAll("[^0-9.]", "").replaceAll("[,]",".");
-
     }
+    
 }

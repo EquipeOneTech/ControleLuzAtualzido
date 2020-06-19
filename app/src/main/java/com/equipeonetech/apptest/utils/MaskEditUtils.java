@@ -6,7 +6,7 @@ import android.widget.EditText;
 
 /**FONTE: https://receitasdecodigo.com.br/android/como-inserir-mascara-em-um-edittext-no-android*/
 public class MaskEditUtils {
-    public static final String FORMAT_MONEY = "###,###,###,##";
+    public static final String FORMAT_MONEY = "###.###.###,##";
 
 
     public static TextWatcher mask(final EditText ediTxt, final String mask) {

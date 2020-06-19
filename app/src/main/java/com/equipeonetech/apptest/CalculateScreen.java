@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -16,6 +17,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -28,13 +30,11 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.equipeonetech.apptest.calculate.Calculator;
 import com.equipeonetech.apptest.dataBase.DataBaseHelper;
-import com.equipeonetech.apptest.sevices.RequestHost;
 import com.equipeonetech.apptest.utils.Utils;
 import com.google.firebase.analytics.FirebaseAnalytics;
 
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
 /**
@@ -44,12 +44,13 @@ import java.util.ArrayList;
 
 public class CalculateScreen extends AppCompatActivity {
     private Button btCalcular, btAtualizar;
-    private View view;
     private ImageButton btConfigScreen;
     private TextView txtViewGraphic, txtValorRecommend, txtValorMes;
     public EditText edtMedidaAnterior, edtMedidaAtual;
     public ListView listView;
     private Context context = this;
+    String valueRecommed = "00.00";
+
     private ArrayList<String> arrayList;
     private ArrayAdapter<String> adapter;
     DataBaseHelper myDB;
@@ -68,7 +69,7 @@ public class CalculateScreen extends AppCompatActivity {
         /**
          * CRIANDO REQUEST PARA BUSCAR MEDIDA DO HOST
          * */
-        getValueHost();
+       getValueHost();
 
         /**Declarando elementos em tela (Botões, textView, caixas de textos)*/
         initComponents();
@@ -79,67 +80,61 @@ public class CalculateScreen extends AppCompatActivity {
         /**Event Clinks*/
         eventClicks();
 
-        /**Set color black if isEmpty*/
-        if(txtValorRecommend.getText().toString().isEmpty()){
-            txtValorMes.setTextColor(getResources().getColor(R.color.colorBlack, getResources().newTheme()));
-        }
+
+        /**Inicia valor recomendado*/
+        initValueRecommend();
+
 
     }
 
+//    public static Runnable t1 = new Runnable() {
+//        public void run() {
+//            getValueHost();
+//        }
+//    };
 
     private void eventClicks() {
-        /**Click view for load colors*/
-        txtValorMes.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                /**Inicia valor recomendado*/
-                if(txtValorRecommend.getText().toString().isEmpty()) {
-                    initValueRecommend();
-                }
-            }
-        });
-
-
         /**
          * @Ação Click do Button Consultar Outros Meses
          **/
         btAtualizar.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onClick(View v) {
                 getValueHost();
             }
         });
 
-        /**
-         * @Action Click do Button Calcular
-         **/
-        btCalcular.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                /**Testando se algum campo está vazio antes do calculo*/
-                if ((!edtMedidaAnterior.getText().toString().isEmpty()) && (!edtMedidaAtual.getText().toString().isEmpty())) {
-                    int numAnterior = Integer.parseInt(edtMedidaAnterior.getText().toString());
-                    int numAtual = Integer.parseInt(edtMedidaAtual.getText().toString());
 
-                    /**@RN001- O campo Medida Anterior não pode ser maior ou igual o campo Medida Atual.*/
-                    if (numAnterior >= numAtual) {
-                        Utils.mensagemNumAnteriorMaiorAtual(context);
-                        edtMedidaAnterior.setError("Valor inválido.");
-                        edtMedidaAtual.setError("Valor inválido.");
-                    } else {
-                        /**regatando valores para realizar calculo*/
-                        calculator.setNumAnterior(numAnterior);
-                        calculator.setNumAtual(numAtual);
-                        alertResultado(calculator.calculando());
+                /**
+                 * @Action Click do Button Calcular
+                 **/
+                btCalcular.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        /**Testando se algum campo está vazio antes do calculo*/
+                        if ((!edtMedidaAnterior.getText().toString().isEmpty()) && (!edtMedidaAtual.getText().toString().isEmpty())) {
+                            int numAnterior = Integer.parseInt(edtMedidaAnterior.getText().toString());
+                            int numAtual = Integer.parseInt(edtMedidaAtual.getText().toString());
+
+                            /**@RN001- O campo Medida Anterior não pode ser maior ou igual o campo Medida Atual.*/
+                            if (numAnterior >= numAtual) {
+                                Utils.mensagemNumAnteriorMaiorAtual(context);
+                                edtMedidaAnterior.setError("Valor inválido.");
+                                edtMedidaAtual.setError("Valor inválido.");
+                            } else {
+                                /**regatando valores para realizar calculo*/
+                                calculator.setNumAnterior(numAnterior);
+                                calculator.setNumAtual(numAtual);
+                                alertResultado(calculator.calculando());
+                            }
+
+                        } else {
+                            edtMedidaAnterior.setError("Preencha o campo!");
+                            edtMedidaAtual.setError("Preencha o campo!");
+                        }
+
                     }
-
-                } else {
-                    edtMedidaAnterior.setError("Preencha o campo!");
-                    edtMedidaAtual.setError("Preencha o campo!");
-                }
-
-            }
-        });
+                });
 
         /**
          * @Action Click for Button open the Config Screen
@@ -173,22 +168,23 @@ public class CalculateScreen extends AppCompatActivity {
      */
     @SuppressLint("ResourceAsColor")
     private void setColorValue(String currentValue, String recommendValue) {
-        float valueScreen = Integer.parseInt(Utils.formatterRegex(currentValue));
-        float recommendvlue = Integer.parseInt(Utils.formatterRegex(recommendValue));
+        float valueScreen = Float.parseFloat(currentValue);
+        float recommendvalue = Float.parseFloat(recommendValue);
 
-        if (valueScreen > recommendvlue) {
+        txtValorMes.setTextColor(getResources().getColor(R.color.colorBlack, getResources().newTheme()));
+
+        if (valueScreen > recommendvalue && txtValorRecommend.getText().toString().length() > 0) {
             txtValorMes.setTextColor(getResources().getColor(R.color.colorRed, getResources().newTheme()));
-        } else {
+        } else if (valueScreen < recommendvalue) {
             txtValorMes.setTextColor(getResources().getColor(R.color.colorGreen, getResources().newTheme()));
-        }
-        if (recommendValue.isEmpty()) {
-            txtValorMes.setTextColor(getResources().getColor(R.color.colorBlack, getResources().newTheme()));
         }
     }
 
     private void initValueRecommend() {
         Cursor res = myDB.getAllDataRecomendTable();
         StringBuffer stringBuffer = new StringBuffer();
+
+
         if (res != null && res.getCount() > 0) {
             int cont = 0;
             int v = res.getCount();
@@ -198,9 +194,10 @@ public class CalculateScreen extends AppCompatActivity {
                 }
                 cont++;
             }
+            txtValorRecommend.setText(Utils.formatterRegex(stringBuffer.toString()));
+            valueRecommed = stringBuffer.toString();
         }
-        txtValorRecommend.setText(stringBuffer.toString());
-        setColorValue(txtValorMes.getText().toString(), txtValorRecommend.getText().toString());
+
     }
 
 
@@ -357,7 +354,7 @@ public class CalculateScreen extends AppCompatActivity {
                     setValueFormatted(currentValue);
                 } catch (Exception e) {
                     e.printStackTrace();
-                    txtValorMes.setText("errou");
+                    txtValorMes.setText(e.toString());
                 }
 
             }
@@ -378,6 +375,8 @@ public class CalculateScreen extends AppCompatActivity {
         String valueMonth = Utils.valueFormatter(calculator.calculando());
 
         txtValorMes.setText("R$ " + valueMonth);
+
+        setColorValue(valueMonth, valueRecommed);
     }
 
 }
