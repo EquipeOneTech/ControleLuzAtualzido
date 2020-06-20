@@ -347,11 +347,9 @@ public class CalculateScreen extends AppCompatActivity {
     public void getValueHost() {
         RequestQueue queue = Volley.newRequestQueue(this.context);
         String url = "http://192.168.15.8:3097/medidorLigth";
-
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-
                 try {
                     JSONObject jsonObject = new JSONObject(response);
                     String currentValue = jsonObject.getString("valorAtual");
@@ -360,7 +358,6 @@ public class CalculateScreen extends AppCompatActivity {
                     e.printStackTrace();
                     txtValorMes.setText(e.toString());
                 }
-
             }
         }, new Response.ErrorListener() {
             @Override
@@ -368,18 +365,14 @@ public class CalculateScreen extends AppCompatActivity {
                 Utils.messageDynamic(context, String.valueOf(error));
             }
         });
-
         queue.add(stringRequest);
     }
 
     public void setValueFormatted(String valueFormatted) {
         calculator.setNumAnterior(0);
         calculator.setNumAtual(Integer.parseInt(valueFormatted));
-
         String valueMonth = Utils.valueFormatter(calculator.calculando());
-
         txtValorMes.setText("R$ " + valueMonth);
-
         setColorValue(Utils.formatterRegexDot(valueMonth), valueRecommed);
     }
 
