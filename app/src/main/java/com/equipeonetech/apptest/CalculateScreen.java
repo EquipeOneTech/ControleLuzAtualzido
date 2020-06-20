@@ -346,7 +346,7 @@ public class CalculateScreen extends AppCompatActivity {
 //    }
     public void getValueHost() {
         RequestQueue queue = Volley.newRequestQueue(this.context);
-        String url = "http://192.168.15.26:3097/medidorLigth";
+        String url = "http://192.168.15.8:3097/medidorLigth";
 
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
             @Override
@@ -380,7 +380,7 @@ public class CalculateScreen extends AppCompatActivity {
 
         txtValorMes.setText("R$ " + valueMonth);
 
-        setColorValue(valueMonth, valueRecommed);
+        setColorValue(Utils.formatterRegexDot(valueMonth), valueRecommed);
     }
 
 }

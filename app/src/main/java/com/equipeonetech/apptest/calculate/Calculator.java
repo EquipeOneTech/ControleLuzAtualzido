@@ -8,7 +8,6 @@ public class Calculator {
     public double custoMaior = 0.84246;
 
 
-
     public Integer getNumAnterior() {
         return numAnterior;
     }
@@ -28,13 +27,14 @@ public class Calculator {
     public double calculando() {
 
         /**Calculando consumo para KWh(quilo watt / hora)*/
-        consumo = (getNumAtual () - getNumAnterior ()) * 1;
-
+        consumo = (getNumAtual() - getNumAnterior()) * 1;
+        double result;
         if (consumo <= 50) {
-            return resultado = consumo * custoNormal;
-
+            result = resultado = consumo * custoNormal;
+            return result;
         } else {
-            return  resultado = consumo * custoMaior;
+            result = resultado = consumo * custoNormal;
+            return result;
         }
 
     }

@@ -49,7 +49,7 @@ public class Utils {
 
     //criar metodo para formatar
     public static String valueFormatter(double result){
-        return String.format("%.2f",result);
+        return String.format("%.2f",result).trim();
     }
 
 
@@ -66,5 +66,7 @@ public class Utils {
     public static String formatterRegex(String value) {
         return value.replaceAll("[^0-9.]", "").replaceAll("[,]",".");
     }
-    
+    public static String formatterRegexDot(String value) {
+        return value.replaceAll("[^0-9.]", ".").replaceAll("[,]",".");
+    }
 }
