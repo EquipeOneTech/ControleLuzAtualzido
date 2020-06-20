@@ -5,7 +5,9 @@
     <item android:id="@+id/itHelp"
         android:title="Ajuda" />
     <item android:id="@+id/itCadastrarCont"
-        android:title="Cadastrar conta\"/>
+        android:title="Cadastrar conta"/>
+    <item android:id="@+id/itCadastrarTarifa"
+        android:title="Cadastrar tarifa"/>
     <item android:id="@+id/itLimparValorRecommend"
         android:title="Limpar Valor Recomendado"/>
 </menu>

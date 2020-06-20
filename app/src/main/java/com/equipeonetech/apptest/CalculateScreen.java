@@ -226,6 +226,10 @@ public class CalculateScreen extends AppCompatActivity {
                 Intent registerElectricity = new Intent(context, RegisterElectricityScreen.class);
                 startActivity(registerElectricity);
                 finish();
+            case R.id.itCadastrarTarifa:
+                Utils.messageDynamic(context, "Em testes.");
+                return true;
+
             default:
                 return super.onOptionsItemSelected(item);
         }
