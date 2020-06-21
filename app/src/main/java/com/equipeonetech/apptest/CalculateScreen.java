@@ -169,7 +169,7 @@ public class CalculateScreen extends AppCompatActivity {
     @SuppressLint("ResourceAsColor")
     private void setColorValue(String currentValue, String recommendValue) {
         float valueScreen = Float.parseFloat(currentValue);
-        float recommendvalue = Float.parseFloat(recommendValue);
+        float recommendvalue = Float.parseFloat(Utils.formatterRegexDot(recommendValue));
 
         txtValorMes.setTextColor(getResources().getColor(R.color.colorBlack, getResources().newTheme()));
 
@@ -346,7 +346,7 @@ public class CalculateScreen extends AppCompatActivity {
 //    }
     public void getValueHost() {
         RequestQueue queue = Volley.newRequestQueue(this.context);
-        String url = "http://192.168.15.8:3097/medidorLigth";
+        String url = "http://192.168.15.51:3097/medidorLigth";
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
