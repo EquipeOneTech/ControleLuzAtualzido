@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -69,7 +70,7 @@ public class CalculateScreen extends AppCompatActivity {
         /**
          * CRIANDO REQUEST PARA BUSCAR MEDIDA DO HOST
          * */
-       getValueHost();
+      // getValueHost();
 
         /**Declarando elementos em tela (Botões, textView, caixas de textos)*/
         initComponents();
@@ -84,6 +85,17 @@ public class CalculateScreen extends AppCompatActivity {
         /**Inicia valor recomendado*/
         initValueRecommend();
 
+        final Handler handler = new Handler();
+
+        final Runnable r = new Runnable() {
+            public void run() {
+                getValueHost();
+                handler.postDelayed(this, 1000);
+            }
+        };
+
+        handler.postDelayed(r, 1000);
+
 
     }
 
@@ -92,6 +104,8 @@ public class CalculateScreen extends AppCompatActivity {
 //            getValueHost();
 //        }
 //    };
+
+
 
     private void eventClicks() {
         /**
@@ -252,6 +266,9 @@ public class CalculateScreen extends AppCompatActivity {
         txtValorRecommend = (TextView) findViewById(R.id.txtValorRecommend);
         txtValorMes = (TextView) findViewById(R.id.valorMes);
     }
+
+
+
 
 
     /**
