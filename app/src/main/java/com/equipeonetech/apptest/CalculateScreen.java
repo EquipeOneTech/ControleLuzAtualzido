@@ -346,11 +346,11 @@ public class CalculateScreen extends AppCompatActivity {
 //    }
     public void getValueHost() {
         RequestQueue queue = Volley.newRequestQueue(this.context);
-<<<<<<< HEAD
+
         String url = "http://192.168.15.26:3097/medidorLigth";
-=======
-        String url = "http://192.168.15.51:3097/medidorLigth";
->>>>>>> 4432d255962b0d1f134a7954d17d0536b2e8d8d7
+
+//        String url = "http://192.168.15.51:3097/medidorLigth";
+
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
