@@ -361,7 +361,8 @@ public class CalculateScreen extends AppCompatActivity {
 //        String value = arrayList.get(position).substring(0,4);
 //        return value.trim();
 //    }
-    public void getValueHost() {
+    public void getValueHost() {a
+aaa
         RequestQueue queue = Volley.newRequestQueue(this.context);
 
         String url = "http://192.168.15.26:3097/medidorLigth";
